@@ -1,6 +1,6 @@
 # Hermes Web UI -- Forward Sprint Plan
 
-> Current state: v0.22 | 382 tests | Daily driver ready
+> Current state: v0.22 | 415 tests | Daily driver ready
 > This document plans the path from here to two targets:
 >
 > Target A: 1:1 feature parity with the Hermes CLI (everything you can do from the
@@ -415,7 +415,7 @@ UX was a low-effort high-impact polish opportunity that pairs naturally.
 - Voice input IIFE in `boot.js` with SpeechRecognition lifecycle.
 - `updateSendBtn()` in `ui.js` hooked into setBusy, renderTray, autoResize.
 
-**Tests:** 52 new (voice) + 33 new (send button). Total: 413.
+**Tests:** 52 new (voice) + 33 new (send button). Total: 415.
 **Hermes CLI parity impact:** Medium (voice not in CLI, but adds capability)
 **Claude parity impact:** High (Claude has native voice mode)
 
@@ -540,5 +540,5 @@ UX was a low-effort high-impact polish opportunity that pairs naturally.
 ---
 
 *Last updated: April 3, 2026*
-*Current version: v0.22 | 382 tests*
+*Current version: v0.22 | 415 tests*
 *Next sprint: Sprint 21 (Mobile Responsive)*

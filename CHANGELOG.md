@@ -6,7 +6,7 @@
 ---
 
 ## [v0.22] Sprint 20 -- Voice Input + Send Button Polish
-*April 3, 2026 | 382 tests*
+*April 3, 2026 | 415 tests*
 
 ### Features
 - **Voice input via Web Speech API.** Microphone button in the composer.
@@ -39,7 +39,9 @@
 
 ### Tests
 - 52 new tests in `test_sprint20.py`: voice input HTML, CSS, JS, append
-  behaviour, error handling, regressions. Total: **382 tests**.
+  behaviour, error handling, regressions.
+- 33 new tests in `test_sprint20b.py`: send button HTML, CSS, JS,
+  animation, visibility logic, regressions. Total: **415 tests**.
 
 ---
 
@@ -714,4 +716,4 @@ Three-panel layout: sessions sidebar, chat area, workspace panel.
 
 ---
 
-*Last updated: v0.22, April 3, 2026 | Tests: 382*
+*Last updated: v0.22, April 3, 2026 | Tests: 415*
