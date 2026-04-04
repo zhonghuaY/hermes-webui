@@ -5,6 +5,33 @@
 
 ---
 
+## [v0.29] CLI Session Bridge (Community: @thadreber-web)
+*April 3, 2026 | 426 tests*
+
+### Features
+- **CLI session bridge.** The WebUI now reads sessions from the hermes-agent's
+  SQLite store (`state.db`). CLI sessions appear in the sidebar with a gold
+  "cli" indicator badge. Click to import into the WebUI store with full message
+  history — replies then work through the normal agent pipeline.
+- **`/api/session/import_cli` endpoint.** Imports a CLI session into the WebUI
+  JSON store. Idempotent — returns existing session if already imported.
+  Derives title from first message, inherits active profile and workspace.
+- **`/api/sessions` merges CLI sessions.** Sidebar shows both WebUI and CLI
+  sessions sorted by last activity. Deduplication ensures WebUI sessions take
+  priority when the same session_id exists in both stores.
+- **CLI session fallback on `/api/session`.** If a session_id isn't found in
+  the WebUI store, falls back to reading from the CLI SQLite store.
+
+### Architecture
+- `api/models.py`: `get_cli_sessions()`, `get_cli_session_messages()`,
+  `import_cli_session()`. All use parameterized SQL queries and `with` for
+  connection management. Graceful fallback on missing sqlite3 or state.db.
+- `api/routes.py`: CLI fallback in GET `/api/session`, merged list in
+  GET `/api/sessions`, POST `/api/session/import_cli`.
+- `static/style.css`: `.cli-session` indicator styles (gold border + badge).
+
+---
+
 ## [v0.28.1] CI Pipeline + Multi-Arch Docker Builds
 *April 3, 2026 | 426 tests*
 
@@ -917,4 +944,4 @@ Three-panel layout: sessions sidebar, chat area, workspace panel.
 
 ---
 
-*Last updated: v0.28.1, April 3, 2026 | Tests: 426*
+*Last updated: v0.29, April 3, 2026 | Tests: 426*
