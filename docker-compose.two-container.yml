@@ -39,6 +39,9 @@ services:
       #   uv pip install /home/hermeswebui/.hermes/hermes-agent
       # which installs the agent and all its Python dependencies.
       - hermes-agent-src:/home/hermeswebui/.hermes/hermes-agent
+      # Workspace directory — browse and edit files from the WebUI.
+      # Adapt the host path to your project directory.
+      - ~/workspace:/workspace
     environment:
       - HERMES_WEBUI_HOST=0.0.0.0
       - HERMES_WEBUI_PORT=8787
