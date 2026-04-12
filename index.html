@@ -2441,14 +2441,30 @@ hermes doctor         # diagnose any issues</code></pre>
   // ===== SMOOTH SCROLL =====
   document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     anchor.addEventListener('click', function(e) {
-      var target = document.querySelector(this.getAttribute('href'));
+      var hash = this.getAttribute('href');
+      var target = document.querySelector(hash);
       if (target) {
         e.preventDefault();
         var top = target.getBoundingClientRect().top + window.scrollY - 72;
         window.scrollTo({ top: top, behavior: 'smooth' });
+        // Update URL hash so the link is shareable / deep-linkable
+        history.pushState(null, '', hash);
       }
     });
   });
+
+  // ===== DEEP LINK ON PAGE LOAD =====
+  // If the URL already has a hash (e.g. someone shares #webui), scroll there
+  // after a brief delay so the page has rendered and nav height is settled.
+  if (window.location.hash) {
+    setTimeout(function() {
+      var target = document.querySelector(window.location.hash);
+      if (target) {
+        var top = target.getBoundingClientRect().top + window.scrollY - 72;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    }, 100);
+  }
 
   // ===== NAV ACTIVE STATE =====
   var sections = document.querySelectorAll('section[id]');
