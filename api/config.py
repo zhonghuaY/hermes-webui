@@ -282,7 +282,7 @@ def _discover_default_workspace() -> Path:
 
 
 DEFAULT_WORKSPACE = _discover_default_workspace()
-DEFAULT_MODEL = os.getenv("HERMES_WEBUI_DEFAULT_MODEL", "openai/gpt-5.4-mini")
+DEFAULT_MODEL = os.getenv("HERMES_WEBUI_DEFAULT_MODEL", "")  # Empty = use provider default; avoids showing unavailable OpenAI model to non-OpenAI users (#646)
 
 
 # ── Startup diagnostics ───────────────────────────────────────────────────────
@@ -1100,25 +1100,27 @@ def get_available_models() -> dict:
                         }
                     )
                 else:
-                    groups.append(
-                        {
-                            "provider": provider_name,
-                            "models": [
-                                {
-                                    "id": default_model,
-                                    "label": default_model.split("/")[-1],
-                                }
-                            ],
-                        }
-                    )
+                    if default_model:
+                        groups.append(
+                            {
+                                "provider": provider_name,
+                                "models": [
+                                    {
+                                        "id": default_model,
+                                        "label": default_model.split("/")[-1],
+                                    }
+                                ],
+                            }
+                        )
     else:
         # No providers detected. Show only the configured default model so the user
         # can at least send messages with their current setting. Avoid showing a
         # generic multi-provider list — those models wouldn't be routable anyway.
-        label = default_model.split("/")[-1] if "/" in default_model else default_model
-        groups.append(
-            {"provider": "Default", "models": [{"id": default_model, "label": label}]}
-        )
+        if default_model:
+            label = default_model.split("/")[-1] if "/" in default_model else default_model
+            groups.append(
+                {"provider": "Default", "models": [{"id": default_model, "label": label}]}
+            )
 
     # Ensure the user's configured default_model always appears in the dropdown.
     # It may be missing if the model isn't in any hardcoded list (e.g. openrouter/free,
