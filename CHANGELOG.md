@@ -5,6 +5,11 @@
 ### Fixed
 - **Reasoning chip now appears after the model chip** in the composer toolbar — model is a more fundamental choice and should be stable in position regardless of whether reasoning is active. Order: Profile → Workspace → Model → Reasoning. (`static/index.html`)
 
+## v0.50.191 — 2026-04-24
+
+### Fixed
+- **WebUI sessions now pass `platform='webui'` to Hermes Agent** — previously all browser-originated sessions passed `platform='cli'`, causing the agent to inject CLI-specific guidance ("avoid markdown, use plain text") that degraded WebUI output quality. Changed to `platform='webui'` in all three AIAgent call sites (`api/streaming.py`, `api/routes.py`). `'webui'` has no entry in `PLATFORM_HINTS` so no conflicting platform guidance is injected. Includes regression tests. (`api/streaming.py`, `api/routes.py`, `tests/test_webui_platform_hint.py`) By @starship-s. [#948]
+
 ## v0.50.190 — 2026-04-24
 
 ### Fixed
