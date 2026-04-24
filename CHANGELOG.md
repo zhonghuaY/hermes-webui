@@ -5,6 +5,11 @@
 ### Fixed
 - **Reasoning chip now appears after the model chip** in the composer toolbar — model is a more fundamental choice and should be stable in position regardless of whether reasoning is active. Order: Profile → Workspace → Model → Reasoning. (`static/index.html`)
 
+## v0.50.186 — 2026-04-24
+
+### Changed
+- **Three-column layout with left rail + main-view migration** — unifies the shell into a rail (48px, desktop-only) + sidebar + main-view canvas matching the hermes-desktop reference. Every per-item detail/edit surface (skills, tasks, workspaces, profiles, memory) now lives in a dedicated `#mainX` container with consistent headers, empty states, and action buttons. Settings moves out of a modal overlay into a full main-view page (ESC closes it). YAML frontmatter renders in a collapsible `<details>` block in skill detail. Toasts repositioned to top-right with theme-aware success/error/warning/info variants. Composer workspace chip split into files-icon + label buttons. `.settings-menu` → `.side-menu` / `.side-menu-item` (shared by memory and settings panels). Mobile: hamburger in titlebar, slide-in sidebar. New i18n keys across en/ru/es/de/zh/zh-Hant for all new form labels. 9 new regression tests. (`static/index.html`, `static/style.css`, `static/panels.js`, `static/boot.js`, `static/sessions.js`, `static/ui.js`, `static/i18n.js`, `tests/test_settings_navigation_and_detail_refresh.py`) By @aronprins. [#899]
+
 ## v0.50.185 — 2026-04-24
 
 ### Fixed
