@@ -5,6 +5,11 @@
 ### Fixed
 - **Reasoning chip now appears after the model chip** in the composer toolbar — model is a more fundamental choice and should be stable in position regardless of whether reasoning is active. Order: Profile → Workspace → Model → Reasoning. (`static/index.html`)
 
+## v0.50.199 — 2026-04-24
+
+### Fixed
+- **Streaming renderer crash under GC pressure** — `_scheduleRender()` previously used `requestAnimationFrame` (up to 60fps), but each DOM update takes 50–150ms on large sessions. During GC pauses, rAF callbacks accumulated and then fired sequentially, blocking the main thread for seconds and crashing the renderer (Chrome error codes 4/5, ERR_CONNECTION_RESET). The render rate is now capped at ~15fps (66ms min interval) via a `setTimeout` → `requestAnimationFrame` chain. Stream cleanup now calls both `clearTimeout()` and `cancelAnimationFrame()` so the handle is correctly cancelled regardless of which path scheduled it. (`static/messages.js`) By @24601. [#966]
+
 ## v0.50.198 — 2026-04-24
 
 ### Fixed
