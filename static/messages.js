@@ -662,7 +662,7 @@ function attachLiveStream(activeSid, streamId, uploaded=[], options={}){
       // the DOM is settled by renderMessages, so no trailing token/reasoning rAF
       // can reintroduce a stale thinking card or duplicate content.
       _streamFinalized=true;
-      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
+      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);clearTimeout(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
       if(typeof finalizeThinkingCard==='function') finalizeThinkingCard();
       // Finalize smd parser — flushes any remaining buffered markdown state
       // and runs Prism + copy buttons on the live segment before the DOM is replaced
@@ -742,7 +742,7 @@ function attachLiveStream(activeSid, streamId, uploaded=[], options={}){
     source.addEventListener('apperror',e=>{
       _terminalStateReached=true;
       _streamFinalized=true;
-      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
+      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);clearTimeout(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
       _smdEndParser();
       if(typeof finalizeThinkingCard==='function') finalizeThinkingCard();
       // Application-level error sent explicitly by the server (rate limit, crash, etc.)
@@ -820,7 +820,7 @@ function attachLiveStream(activeSid, streamId, uploaded=[], options={}){
     source.addEventListener('cancel',e=>{
       _terminalStateReached=true;
       _streamFinalized=true;
-      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
+      if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);clearTimeout(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
       _smdEndParser();
       if(typeof finalizeThinkingCard==='function') finalizeThinkingCard();
       source.close();
@@ -896,7 +896,7 @@ function attachLiveStream(activeSid, streamId, uploaded=[], options={}){
     // Opus review Q1: mirror done/apperror/cancel finalization so any pending rAF
     // cannot fire after renderMessages() has settled the DOM with the error message.
     _streamFinalized=true;
-    if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
+    if(_pendingRafHandle!==null){cancelAnimationFrame(_pendingRafHandle);clearTimeout(_pendingRafHandle);_pendingRafHandle=null;_renderPending=false;}
     if(typeof finalizeThinkingCard==='function') finalizeThinkingCard();
     delete INFLIGHT[activeSid];clearInflight();clearInflightState(activeSid);stopApprovalPolling();stopClarifyPolling();
     _closeSource();
