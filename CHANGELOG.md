@@ -5,6 +5,11 @@
 ### Fixed
 - **Reasoning chip now appears after the model chip** in the composer toolbar — model is a more fundamental choice and should be stable in position regardless of whether reasoning is active. Order: Profile → Workspace → Model → Reasoning. (`static/index.html`)
 
+## v0.50.193 — 2026-04-24
+
+### Fixed
+- **Strip malformed DSML `function_calls` tags from DeepSeek/Bedrock responses** — extends the existing XML tool-call stripping logic to handle DeepSeek's DSML-prefixed variants (`<｜DSML｜function_calls>`, `<｜DSML |function_calls`, and fragmented `<｜DSML |` tokens) in backend (`api/streaming.py`), live streaming (`static/messages.js`), and settled render (`static/ui.js`). Prevents raw function-call XML from leaking into message content. (`api/streaming.py`, `static/messages.js`, `static/ui.js`) By @bsgdigital. [#958]
+
 ## v0.50.192 — 2026-04-24
 
 ### Changed
