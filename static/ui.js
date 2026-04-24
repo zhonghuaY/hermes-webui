@@ -492,6 +492,7 @@ document.addEventListener('click',function(e){
     }
   }
 });
+window.addEventListener('resize',()=>{const dd=$('composerReasoningDropdown');if(dd&&dd.classList.contains('open')) _positionReasoningDropdown();});
 
 // ── Scroll pinning ──────────────────────────────────────────────────────────
 // When streaming, auto-scroll only if the user hasn't manually scrolled up.
