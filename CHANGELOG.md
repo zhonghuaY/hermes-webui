@@ -3,6 +3,12 @@
 ## [Unreleased]
 
 ### Fixed
+- **Onboarding wizard no longer fires for users with non-wizard providers** (ollama, deepseek, xai, kimi, etc.) — the wizard's auto-complete guard previously required `chat_ready`, which demands a detectable API key. Providers like `ollama-cloud` need no API key, so `chat_ready` was always `False` even with a fully-configured `config.yaml`. The guard now also auto-completes when `provider_configured` is True (provider and model set in config), which correctly covers CLI-configured users on any provider. (`api/onboarding.py`) Closes #1020.
+- **Onboarding wizard model pre-selection no longer falls back to `openai/gpt-5.4-mini`** — the wizard's model field used a hardcoded `'openai/gpt-5.4-mini'` literal as a last resort, which became the displayed value when the existing config's model wasn't recognized (e.g. `kimi-k2.6`). Replaced with empty string; the wizard now shows a blank field rather than pre-selecting a model the user doesn't have access to. (`static/onboarding.js`) Closes #1021.
+- **Stale cross-provider session models now normalize correctly for non-standard providers** — `_normalize_provider_id()` previously returned `""` for any provider not in its short prefix list (ollama-cloud, deepseek, xai, etc.), causing `_resolve_compatible_session_model()` to treat all such providers as "no active provider" and pass stale models through unchanged. The function now delegates to `_resolve_provider_alias()` from `api/config.py`, which uses the full alias table and returns the provider slug for unknown names rather than an empty string. (`api/routes.py`) Closes #1023.
+- **Hermes agent discovery now finds non-standard install paths** — `_discover_agent_dir()` now also searches `$XDG_DATA_HOME/hermes-agent` (default `~/.local/share/hermes-agent`), `/opt/hermes-agent`, `/usr/local/hermes-agent`, and `/usr/local/share/hermes-agent`. Previously only home-relative and sibling-repo paths were checked, so users who installed hermes-agent at a system path had to set `HERMES_WEBUI_AGENT_DIR` manually. (`api/config.py`) Closes #1019.
+
+### Fixed
 - **Reasoning chip now appears after the model chip** in the composer toolbar — model is a more fundamental choice and should be stable in position regardless of whether reasoning is active. Order: Profile → Workspace → Model → Reasoning. (`static/index.html`)
 
 ## v0.50.206 — 2026-04-25
