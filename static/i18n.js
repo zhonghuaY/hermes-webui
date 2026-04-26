@@ -3432,6 +3432,7 @@ const LOCALES = {
     regenerate: '응답 다시 생성',
     copy: '복사',
     copied: '복사됨!',
+    copy_failed: '복사 실패',
     you: '나',
     thinking: '생각 중',
     expand_all: '모두 펼치기',
