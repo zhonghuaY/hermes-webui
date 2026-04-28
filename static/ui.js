@@ -2945,7 +2945,12 @@ function renderMermaidBlocks(){
     }
     return;
   }
-  blocks.forEach(async(block)=>{
+  // Render one block — extracted so both the IntersectionObserver path and
+  // the eager fallback can share identical syntax-error / orphan-cleanup
+  // handling.  Marks the block before render so re-entry from the observer
+  // (or a stray re-call) is a no-op.
+  const renderOne=async(block)=>{
+    if(block.dataset.rendered) return;
     block.dataset.rendered='true';
     const code=block.textContent;
     const id=block.dataset.mermaidId||('m-'+Math.random().toString(36).slice(2));
@@ -2953,17 +2958,12 @@ function renderMermaidBlocks(){
       block.innerHTML=`<div class="pre-header">mermaid</div><pre><code>${esc(code)}</code></pre>`;
     };
     const cleanupOrphanError=()=>{
-      // mermaid 10.x can leak an error SVG into <body> even with suppressErrorRendering;
-      // remove any element whose id matches the render id we passed in.
       ['d'+id,id,id+'-svg'].forEach(orphanId=>{
         const o=document.getElementById(orphanId);
         if(o && !block.contains(o)) o.remove();
       });
     };
     try{
-      // Validate first so a syntax error does not trigger mermaid's internal
-      // "Syntax error in text" SVG, which used to be appended to <body> and
-      // take up massive space on screen.
       if(typeof mermaid.parse==='function'){
         const ok=await mermaid.parse(code,{suppressErrors:true});
         if(ok===false){ renderFallback(); cleanupOrphanError(); return; }
@@ -2975,7 +2975,27 @@ function renderMermaidBlocks(){
       renderFallback();
       cleanupOrphanError();
     }
-  });
+  };
+  // Lazy path: defer mermaid.render() until block scrolls within ~300 px of
+  // the viewport.  A long session with 50 diagrams used to spend hundreds of
+  // ms on session-switch rendering off-screen blocks; this collapses that
+  // cost to per-block as the user scrolls.
+  if(typeof IntersectionObserver!=='undefined'){
+    if(!window._mermaidLazyObserver){
+      window._mermaidLazyObserver=new IntersectionObserver((entries,observer)=>{
+        for(const e of entries){
+          if(e.isIntersecting){
+            observer.unobserve(e.target);
+            renderOne(e.target);
+          }
+        }
+      },{rootMargin:'300px 0px',threshold:0});
+    }
+    blocks.forEach(b=>{ window._mermaidLazyObserver.observe(b); });
+    return;
+  }
+  // Fallback: no IntersectionObserver (very old browsers / jsdom) — render eagerly.
+  blocks.forEach(b=>{ renderOne(b); });
 }
 
 let _katexLoading=false;
@@ -3001,7 +3021,8 @@ function renderKatexBlocks(){
     }
     return;
   }
-  blocks.forEach(el=>{
+  const renderOne=(el)=>{
+    if(el.dataset.rendered) return;
     el.dataset.rendered='true';
     const src=el.textContent||'';
     const displayMode=el.dataset.katex==='display';
@@ -3013,10 +3034,25 @@ function renderKatexBlocks(){
         strict:'ignore',
       });
     }catch(e){
-      // Leave as raw text in a code span on failure
       el.outerHTML=`<code>${esc(src)}</code>`;
     }
-  });
+  };
+  // Lazy path: same rationale as mermaid — defer katex.render() to viewport.
+  if(typeof IntersectionObserver!=='undefined'){
+    if(!window._katexLazyObserver){
+      window._katexLazyObserver=new IntersectionObserver((entries,observer)=>{
+        for(const e of entries){
+          if(e.isIntersecting){
+            observer.unobserve(e.target);
+            renderOne(e.target);
+          }
+        }
+      },{rootMargin:'300px 0px',threshold:0});
+    }
+    blocks.forEach(b=>{ window._katexLazyObserver.observe(b); });
+    return;
+  }
+  blocks.forEach(renderOne);
 }
 
 function _thinkingMarkup(text=''){
