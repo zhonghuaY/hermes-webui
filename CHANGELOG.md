@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Performance
+- **Session-switch perf overhaul** — five coordinated changes targeting the "切换非常差" (slow session-switch) pain on long conversations. Server-side `/api/session?tail=N` returns just the recent window (~9× smaller payload, 7.5× faster); weak ETag + 304 fast path cuts re-switch to 0.4 ms / 0 bytes; client `api()` resurrects cached body on 304 without JSON parse; render cache stores cloned DOM + last-message fingerprint so edits/retries no longer serve stale HTML; `renderMessages` builds into a `DocumentFragment` and mounts atomically (~199 reflows → 1 for a 200-msg session); mermaid + katex render gated behind `IntersectionObserver` so off-screen diagrams don't block the main thread on switch. See `docs/PERFORMANCE.md` and `docs/plans/PERF_RESULTS.md`. (`api/routes.py`, `api/helpers.py`, `static/ui.js`, `static/workspace.js`) [#perf @copilot]
+
 ### Fixed
 
 ## v0.50.223 — 2026-04-26
